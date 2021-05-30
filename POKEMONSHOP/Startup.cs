@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -48,6 +49,17 @@ namespace POKEMONSHOP
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+
+                facebookOptions.Events = new OAuthEvents()
+                {
+                    OnRemoteFailure = loginFailureHandler =>
+                    {
+                        var authProperties = facebookOptions.StateDataFormat.Unprotect(loginFailureHandler.Request.Query["state"]);
+                        loginFailureHandler.Response.Redirect("/Identity/Account/Login");
+                        loginFailureHandler.HandleResponse();
+                        return Task.FromResult(0);
+                    }
+                };
             });
         }
 
