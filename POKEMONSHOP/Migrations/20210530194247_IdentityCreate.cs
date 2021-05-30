@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace POKEMONSHOP.Migrations
 {
-    public partial class first300521 : Migration
+    public partial class IdentityCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

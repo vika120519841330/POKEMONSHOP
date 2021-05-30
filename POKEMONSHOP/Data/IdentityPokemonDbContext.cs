@@ -6,9 +6,9 @@ using System.Text;
 
 namespace POKEMONSHOP.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class IdentityPokemonDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public IdentityPokemonDbContext(DbContextOptions<IdentityPokemonDbContext> options)
             : base(options)
         {
         }
