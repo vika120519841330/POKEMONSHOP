@@ -47,7 +47,7 @@ namespace POKEMONSHOP
             services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
             services.AddDatabaseDeveloperPageExceptionFilter();
             //
-            services.AddSingleton<WeatherForecastService>();
+            services.AddSingleton<PokemonService>();
             services.AddMvc();
 
             // SocialLogIn
