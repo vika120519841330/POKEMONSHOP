@@ -69,27 +69,6 @@
 
     private bool IsAvailableChangeEMail { get; set; } = true;
 
-    // Статусное сообщение
-    private string statusMessage = string.Empty;
-    public string StatusMessage
-    {
-        get
-        {
-            return statusMessage;
-        }
-        set
-        {
-            if (value != null && value.Length > 0)
-            {
-                statusMessage = value;
-            }
-            else
-            {
-                statusMessage = String.Empty;
-            }
-        }
-    }
-
     // Эл.почта
     private string eMail = string.Empty;
     private string EMail
@@ -235,12 +214,14 @@
 
         if (this.Order != null && this.Order.Id > 0)
         {
-            this.StatusMessage = $"Поздравляем с успешным заказом покемона! Пользователь {this.Customer?.Email ?? string.Empty} уже {this.service?.GetNumberOrders(this.Customer?.Id ?? 0).ToString() ?? string.Empty} раз купил покемона! На эл.почту {this.Customer?.Email ?? string.Empty} было выслано подтверждение и номер заказа!";
-            navMan.NavigateTo("/Line", true);
+            string email = this.Customer?.Email ?? string.Empty;
+            string num = this.service?.GetNumberOrders(this.Customer?.Id ?? 0).ToString() ?? string.Empty;
+
+            navMan.NavigateTo($"/Line/{email}/{num}", true);
         }
         else
         {
-            this.StatusMessage = "Что-то пошло не так! Попробуйте снова!";
+            return;
         }
     }
 }

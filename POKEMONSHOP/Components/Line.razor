@@ -1,4 +1,6 @@
 ﻿@page "/Line"
+@page "/Line/{StatusMessage}"
+@page "/Line/{appUser}/{number}"
 @using POKEMONSHOP.Contracts
 @using Microsoft.AspNetCore.Http
 @using POKEMONSHOP.Data
@@ -9,6 +11,9 @@
 
 @inject IPokemonService service
 
+<h5>
+    @this.StatusMessage
+</h5>
 <h3>
     Покупатели покемонов и их заказы
 </h3>
@@ -80,26 +85,40 @@
     </table>
 </div>
 
-    @code {
-        [Parameter]
-        public string AppUser { get; set; }
+@code {
+    [Parameter]
+    public string AppUser { get; set; }
 
-        private List<Customer> Customers { get; set; }
+    [Parameter]
+    public string Number { get; set; }
 
-        private void InitializeCollections()
+    private List<Customer> Customers { get; set; }
+
+    // Статусное сообщение
+    [Parameter]
+    public string StatusMessage { get; set; }
+
+    private void InitializeCollections()
+    {
+        this.Customers = this.service?.GetAllCustomers();
+    }
+
+    /// <summary>
+    /// Метод для получения всех заказов пользователя
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
+    private List<Order> GetOrdersSomeCustomer(int id) => this.service?.GetAllOrdersSomeCustomer(id) ?? new List<Order>();
+
+    protected override void OnInitialized()
+    {
+        this.InitializeCollections();
+
+        if (string.IsNullOrEmpty(this.StatusMessage) && !string.IsNullOrEmpty(this.Number))
         {
-            this.Customers = this.service?.GetAllCustomers();
-        }
-
-        /// <summary>
-        /// Метод для получения всех заказов пользователя
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        private List<Order> GetOrdersSomeCustomer(int id) => this.service?.GetAllOrdersSomeCustomer(id) ?? new List<Order>();
-
-        protected override void OnInitialized()
-        {
-            this.InitializeCollections();
+            this.StatusMessage = $"Поздравляем с успешным заказом покемона!" +
+                    $" Пользователь {this.AppUser ?? string.Empty} уже {this.Number} раз купил покемона! " +
+                    $"На эл.почту {this.AppUser ?? string.Empty} было выслано подтверждение и номер заказа!";
         }
     }
+}

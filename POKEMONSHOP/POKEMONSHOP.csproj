@@ -20,4 +20,8 @@
     <ProjectReference Include="..\POKEMONLIBRARY\POKEMONLIBRARY.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
