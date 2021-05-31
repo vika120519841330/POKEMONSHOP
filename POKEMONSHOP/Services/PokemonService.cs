@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace POKEMONSHOP.Services
 {
-    public class PokemonService
+    public class PokemonService : IPokemonService
     {
         private readonly IRepository rep;
         public PokemonService(IRepository rep)
