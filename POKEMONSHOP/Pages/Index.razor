@@ -7,9 +7,11 @@
 </h1>
 
 @code{
+    private string AppUser { get; set; }
+
     protected override void OnInitialized()
     {
-        this.GetCurrentUser();
+        this.AppUser = this.GetCurrentUser();
     }
 }
 

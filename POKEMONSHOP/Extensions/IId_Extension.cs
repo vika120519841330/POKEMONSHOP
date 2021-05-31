@@ -66,5 +66,20 @@ namespace POKEMONSHOP.Extensions
             return attr != null ? valueSelector(attr) : default(TValue);
         }
 
+        /// <summary>
+        /// Метод для преобразования коллекции в строку
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static string ItemsToString<T>(this List<T> list, char divider)
+        {
+            string result = "";
+            foreach (var item in list)
+            {
+                result += $"{item.ToString()} {divider}";
+            }
+            return result;
+        }
     }
 }

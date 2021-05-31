@@ -12,20 +12,15 @@ namespace POKEMONSHOP.Data
         [Inject]
         public IHttpContextAccessor httpContextAccessor { get; set; }
 
-        public string AppUser { get; set; }
-
-        public CurrentAppUser()
-        {   }
-
         /// <summary>
         /// Метод для получения текущего пользователя из контекста запроса или из куки
         /// </summary>
-        public void GetCurrentUser()
+        public string GetCurrentUser()
         {
-            this.AppUser = httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? string.Empty;
+            string user = httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? string.Empty;
 
             // Если AppUser не был считан из контекста запроса, то получить его из куки
-            if (this.AppUser.Length <= 0)
+            if (user.Length <= 0)
             {
                 string userName = string.Empty;
 
@@ -33,14 +28,15 @@ namespace POKEMONSHOP.Data
 
                 if (userName != null && userName.Length > 0)
                 {
-                    this.AppUser = userName;
+                    user = userName;
                 }
                 else
                 {
-                    this.AppUser = string.Empty;
+                    user = string.Empty;
                 }
             }
-        }
 
+            return user;
+        }
     }
 }

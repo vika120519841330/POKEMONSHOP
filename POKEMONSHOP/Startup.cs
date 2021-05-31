@@ -149,7 +149,7 @@ namespace POKEMONSHOP
             {
                 if (!context.Request.Cookies.ContainsKey("UserName"))
                 {
-                    context.Response.Cookies.Append("UserName", "Пользователь пока не авторизован");
+                    context.Response.Cookies.Append("UserName", "");
                 }
                 else
                 {

@@ -18,19 +18,6 @@ namespace POKEMONLIBRARY.Configuration
                    .HasKey(_ => _.Id)
                    ;
             ;
-            builder
-                   .Property(_ => _.Id)
-                   .ValueGeneratedOnAdd()
-                   ;
-            builder
-                   .Property(_ => _.Name)
-                   .IsRequired()
-                   ;
-
-            builder
-                   .Property(_ => _.PhoneNumber)
-                   .IsRequired()
-                   ;
 
             builder.HasComment(nameof(Customer));
         }

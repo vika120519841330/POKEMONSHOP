@@ -1,11 +1,15 @@
 ﻿@page "/DoOrder"
 @using Microsoft.AspNetCore.Http
 @using POKEMONSHOP.Data
+@using POKEMONSHOP.Contracts
 @using POKEMONLIBRARY.Models
+@using POKEMONLIBRARY.Contracts
 @using POKEMONSHOP.Extensions
 @using System.ComponentModel.DataAnnotations
 
 @inject IHttpContextAccessor httpContextAccessor
+@inject IPokemonService service
+@inject NavigationManager navMan
 @inherits CurrentAppUser
 
 <h2>
@@ -13,30 +17,120 @@
 </h2>
 @{
     string label_Email = IId_Extension.GetPropertyAttributeValue<Customer, string, DisplayAttribute, string>(_ => _.Email, _ => _.Name) ?? string.Empty;
-    string label_Phone = IId_Extension.GetPropertyAttributeValue<Customer, string, DisplayAttribute, string>(_ => _.PhoneNumber, _ => _.Name) ?? string.Empty;
-    string label_Name = IId_Extension.GetPropertyAttributeValue<Customer, string, DisplayAttribute, string>(_ => _.Name, _ => _.Name) ?? string.Empty;
-
-
+    string label_Phone = IId_Extension.GetPropertyAttributeValue<Order, string, DisplayAttribute, string>(_ => _.PhoneNumber, _ => _.Name) ?? string.Empty;
+    string label_Name = IId_Extension.GetPropertyAttributeValue<Order, string, DisplayAttribute, string>(_ => _.Name, _ => _.Name) ?? string.Empty;
+    string styleButton = "non-active";
+    if (this.ValidateModel(new List<IId> { this.Customer, this.Order }))
+    {
+        styleButton = string.Empty;
+    }
 }
-
-@*Поле с эл.почтой*@
 
 <div class="Add_div">
     <div class="Add_div_title">
-        Укажите @label_Email
+        @label_Email
     </div>
     <div>
-        <input type="email" @bind="this.Customer.Email" @bind:event="oninput" />
+        @if (this.IsAvailableChangeEMail)
+        {
+            <input type="email" @bind="this.EMail" @bind:event="oninput" />
+        }
+        else
+        {
+            <input type="email" @bind="this.EMail" @bind:event="oninput" disabled />
+        }
+    </div>
+    <div class="Add_div_title">
+        @label_Name
+    </div>
+    <div>
+        <input type="email" @bind="this.Name" @bind:event="oninput" />
+    </div>
+    <div class="Add_div_title">
+        @label_Phone
+    </div>
+    <div>
+        <input type="email" @bind="this.Phone" @bind:event="oninput" />
     </div>
 </div>
+<div style="color: red; font-size: medium; font-weight: bold;">
+    @this.ErrorValidation
+</div>
+<div>
+    <button type="button" class="@styleButton" @onclick="@(() => this.CreateOrder())">Заказать</button>
+</div>
+
 
 @code {
     private Customer Customer { get; set; }
     private Order Order { get; set; }
+    private string AppUser { get; set; }
+    public string ErrorValidation { get; set; } = string.Empty;
 
-    private string EMail { get; set; }
-    private string Name { get; set; }
-    private string Phone { get; set; }
+    private bool IsAvailableChangeEMail { get; set; } = true;
+
+    // Статусное сообщение
+    private string statusMessage = string.Empty;
+    public string StatusMessage
+    {
+        get
+        {
+            return statusMessage;
+        }
+        set
+        {
+            if (value != null && value.Length > 0)
+            {
+                statusMessage = value;
+            }
+            else
+            {
+                statusMessage = String.Empty;
+            }
+        }
+    }
+
+    // Эл.почта
+    private string eMail = string.Empty;
+    private string EMail
+    {
+        get => this.eMail;
+        set
+        {
+            this.eMail = value;
+            this.Customer.Email = eMail;
+            this.ValidateModel(new List<IId> { this.Customer });
+            this.StateHasChanged();
+        }
+    }
+
+    // Имя покупателя
+    private string name = string.Empty;
+    private string Name
+    {
+        get => this.name;
+        set
+        {
+            this.name = value;
+            this.Order.Name = value;
+            this.ValidateModel(new List<IId> { this.Order });
+            this.StateHasChanged();
+        }
+    }
+
+    // Контактный № тел. покупателя
+    private string phone = string.Empty;
+    private string Phone
+    {
+        get => this.phone;
+        set
+        {
+            this.phone = value;
+            this.Order.PhoneNumber = value;
+            this.ValidateModel(new List<IId> { this.Order });
+            this.StateHasChanged();
+        }
+    }
 
     // Истина, если пользователь авторихован
     private bool isAuthorezed = false;
@@ -59,13 +153,93 @@
     /// <summary>
     /// Первичная инициализация членов класса текущего компонента
     /// </summary>
-    protected override void OnInitialized()
+    protected override void OnInitialized() => this.SetUpItemsOfComponent();
+
+    /// <summary>
+    /// вызов конструкторов по умолчанию для ссылочных типов текущего компонента
+    /// </summary>
+    private void SetUpItemsOfComponent()
     {
-        this.SetEmptyItemsOfComponent();
+        this.AppUser = this.GetCurrentUser();
+        this.Customer = new Customer();
+        this.Order = new Order { DateOrder = new DateTime(year: DateTime.Now.Year,
+                                                          month: DateTime.Now.Month,
+                                                          day: DateTime.Now.Day,
+                                                          hour: DateTime.Now.Hour,
+                                                          minute: DateTime.Now.Minute,
+                                                          second: DateTime.Now.Second)};
+        this.SetInitialData();
     }
 
-    private void SetEmptyItemsOfComponent()
+    /// <summary>
+    /// Инициализация персональных данных покупателя, на которого оформляется заказ
+    /// </summary>
+    private void SetInitialData()
     {
+        if (this.IsAuthorezed)
+        {
+            this.EMail = this.AppUser;
+            this.IsAvailableChangeEMail = false;
+        }
+        else
+        {
+            this.EMail = string.Empty;
+        }
 
+        this.Phone = string.Empty;
+        this.Name = string.Empty;
+    }
+
+    /// <summary>
+    /// Метод для валидации модели
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    private bool ValidateModel(List<IId> items)
+    {
+        bool result = true;
+
+        this.ErrorValidation = string.Empty;
+
+        if (items != null && items.Count > 0)
+        {
+            foreach (var item in items)
+            {
+                var resValid = item.CheckModelIsValid();
+
+                if (!resValid.Item1)
+                {
+                    result = resValid.Item1;
+                    this.ErrorValidation = string.Concat(this.ErrorValidation, resValid.Item2.ItemsToString('!'));
+                }
+                else
+                {
+                    continue;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private void CreateOrder()
+    {
+        this.Customer = this.service?.CreateCustomer(this.Customer) ?? new Customer();
+        if (this.Customer != null && this.Customer?.Id > 0)
+        {
+            this.Order.CustomerId = this.Customer.Id;
+            this.Order.Customer = this.Customer;
+            this.Order = this.service?.CreateOrder(this.Order) ?? new Order();
+        }
+
+        if (this.Order != null && this.Order.Id > 0)
+        {
+            this.StatusMessage = $"Поздравляем с успешным заказом покемона! Пользователь {this.Customer?.Email ?? string.Empty} уже {this.service?.GetNumberOrders(this.Customer?.Id ?? 0).ToString() ?? string.Empty} раз купил покемона! На эл.почту {this.Customer?.Email ?? string.Empty} было выслано подтверждение и номер заказа!";
+            navMan.NavigateTo("/Line", true);
+        }
+        else
+        {
+            this.StatusMessage = "Что-то пошло не так! Попробуйте снова!";
+        }
     }
 }

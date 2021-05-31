@@ -17,9 +17,14 @@ namespace POKEMONLIBRARY.Configuration
                    .ToTable("Order")
                    .HasKey(_ => _.Id)
                    ;
+
             builder
-                   .Property(_ => _.Id)
-                   .ValueGeneratedOnAdd()
+                   .Property(_ => _.Name)
+                   .IsRequired()
+                   ;
+            builder
+                   .Property(_ => _.PhoneNumber)
+                   .IsRequired()
                    ;
             builder
                    .HasOne(_ => _.Customer)
@@ -27,7 +32,6 @@ namespace POKEMONLIBRARY.Configuration
                    .HasForeignKey(_ => _.CustomerId)
                    .OnDelete(DeleteBehavior.NoAction)
                    ;
-
             builder.HasComment(nameof(Order));
         }
     }

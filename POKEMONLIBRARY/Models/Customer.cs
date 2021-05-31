@@ -24,17 +24,6 @@ namespace POKEMONLIBRARY.Models
         [Required(ErrorMessage = "Адрес электронной почты обязателен для заполнения")]
         public string Email { get; set; } = string.Empty;
 
-        [Display(Name = "Имя покупателя:")]
-        [DataType(DataType.MultilineText)]
-        [StringLength(100, MinimumLength = 2, ErrorMessage = "Имя покупателя должно содержать не менее 2 и не более 100 символов!")]
-        public string Name { get; set; } = string.Empty;
-
-        [Display(Name = "Контактный номер телефона")]
-        [DataType(DataType.PhoneNumber)]
-        [Phone(ErrorMessage = "Недопустимое значение формата телефонного номера")]
-        [Required(ErrorMessage = "Контактный номер телефона обязателен для заполнения")]
-        public string PhoneNumber { get; set; } = string.Empty;
-
         public bool Equals(Customer other) => string.Equals(this.Email, other.Email, StringComparison.Ordinal);
 
         [Display(Name = "Заказы, сделанные покупателем")]
