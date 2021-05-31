@@ -57,7 +57,7 @@
     @this.ErrorValidation
 </div>
 <div>
-    <button type="button" class="@styleButton" @onclick="@(() => this.CreateOrder())">Заказать</button>
+    <button type="button" class="@styleButton" @onclick="@(async() => this.CreateOrder())">Заказать</button>
 </div>
 
 
@@ -222,14 +222,15 @@
         return result;
     }
 
-    private void CreateOrder()
+    private async void CreateOrder()
     {
         this.Customer = this.service?.CreateCustomer(this.Customer) ?? new Customer();
+
         if (this.Customer != null && this.Customer?.Id > 0)
         {
             this.Order.CustomerId = this.Customer.Id;
             this.Order.Customer = this.Customer;
-            this.Order = this.service?.CreateOrder(this.Order) ?? new Order();
+            this.Order = await this.service?.CreateOrder(this.Order) ?? new Order();
         }
 
         if (this.Order != null && this.Order.Id > 0)

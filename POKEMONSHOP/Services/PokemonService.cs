@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity.UI.Services;
 using POKEMONLIBRARY.Models;
 using POKEMONSHOP.Contracts;
 using System;
@@ -10,9 +11,12 @@ namespace POKEMONSHOP.Services
     public class PokemonService : IPokemonService
     {
         private readonly IRepository rep;
-        public PokemonService(IRepository rep)
+        private readonly IEmailSender emailSender;
+
+        public PokemonService(IRepository rep, IEmailSender emailSender)
         {
             this.rep = rep;
+            this.emailSender = emailSender;
         }
 
         /// <summary>
@@ -41,7 +45,26 @@ namespace POKEMONSHOP.Services
         /// </summary>
         /// <param name="order">Заказ, подлежащий добавлению в БД</param>
         /// <returns>Заказ, добавленный в БД</returns>
-        public Order CreateOrder(Order order) => this.rep?.Orders?.CreateOrder(order) ?? new Order();
+        public async Task<Order> CreateOrder(Order order)
+        {
+            Order res = this.rep?.Orders?.CreateOrder(order) ?? new Order();
+            string email = this.rep?.Customers?.GetCustomer(order.CustomerId)?.Email ?? string.Empty;
+            string title = $"Информация о заказе № {order.Id} от {order.DateOrder.Day}.{order.DateOrder.Month}.{order.DateOrder.Year}г.";
+            string message = $"Заказ № {order.Id} успешно принят к обработке {order.DateOrder.Day}.{order.DateOrder.Month}.{order.DateOrder.Year} {order.DateOrder.Hour}:{order.DateOrder.Minute}";
+
+            await this.SendorderInfoToToEMail(email, title, message);
+
+            return res;
+        }
+
+        /// <summary>
+        /// Вспомогательный метод для отправки сведений о заказе покемона на почту покупателя
+        /// </summary>
+        /// <param name="email">Эл.почта</param>
+        /// <param name="title">Заголовок письма</param>
+        /// <param name="message">Тело письма</param>
+        /// <returns></returns>
+        private async Task SendorderInfoToToEMail(string email, string title, string message) =>  await this.emailSender.SendEmailAsync(email, title, message);
 
         /// <summary>
         /// Метод для формирования ленты
