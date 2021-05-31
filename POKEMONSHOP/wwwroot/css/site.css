@@ -48,3 +48,29 @@ a, .btn-link {
         right: 0.75rem;
         top: 0.5rem;
     }
+
+.Add_div {
+    /*padding: 10px;*/
+    margin-top: 25px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border: 1px solid #BFEEFA; /*#23A9CA*/
+    /*background-color: #82898F;*/
+    /* background-color: #606060;*/
+}
+
+    .Add_div > * {
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+.Add_div_title {
+    background-color: #BFEEFA; /*#23A9CA*/
+    color: black;
+    padding: 5px;
+    margin-bottom: 5px;
+    margin-left: unset;
+    margin-right: unset;
+    text-align: center;
+    vertical-align: central;
+}

@@ -1,44 +1,15 @@
 ﻿@page "/"
-@using Microsoft.AspNetCore.Http
-@inject IHttpContextAccessor httpContextAccessor
+@using POKEMONSHOP.Data
+@inherits CurrentAppUser
 
-<label>
+<h1>
     Добро пожаловать в магазин покемонов @this.AppUser !
-</label>
+</h1>
 
 @code{
-    // Текущий пользователь - в случае, если авторизован
-    public string AppUser { get; set; }
-
     protected override void OnInitialized()
     {
         this.GetCurrentUser();
     }
-
-    /// <summary>
-    /// Метод для получения текущего пользователя из контекста запроса или из куки
-    /// </summary>
-    private void GetCurrentUser()
-    {
-        this.AppUser = httpContextAccessor?.HttpContext?.User?.Identity?.Name ?? string.Empty;
-
-        // Если AppUser не был считан из контекста запроса, то получить его из куки
-        if (this.AppUser.Length <= 0)
-        {
-            string userName = string.Empty;
-
-            bool? trygetUserName = this.httpContextAccessor?.HttpContext?.Request?.Cookies?.TryGetValue("UserName", out userName);
-
-            if (userName != null && userName.Length > 0)
-            {
-                this.AppUser = userName;
-            }
-            else
-            {
-                this.AppUser = string.Empty;
-            }
-        }
-    }
-
 }
 

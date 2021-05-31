@@ -1,4 +1,5 @@
-﻿using System;
+﻿using POKEMONLIBRARY.Contracts;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,7 +13,7 @@ namespace POKEMONLIBRARY.Models
     /// Класс, представляющий собой заказ покемона авторизованным / неавторизованным покупателем
     /// </summary>
     [Table("Order")]
-    public class Order
+    public class Order: IId
     {
         [Key]
         public int Id { get; set; }
