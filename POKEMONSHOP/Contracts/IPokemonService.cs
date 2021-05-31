@@ -8,8 +8,11 @@ namespace POKEMONSHOP.Contracts
 {
     public interface IPokemonService
     {
-        Dictionary<string, Dictionary<DateTime, int>> GetLineAllOrdersSomeCustomers();
         Task<Order> CreateOrder(Order order);
+        List<Order> GetAllOrdersSomeCustomer(int idCustomer);
+
+        List<Customer> GetAllCustomers();
+
         int GetNumberOrders(int idCustomer);
         Customer CreateCustomer(Customer customer);
     }

@@ -12,9 +12,9 @@
 @inject NavigationManager navMan
 @inherits CurrentAppUser
 
-<h2>
+<h3>
     Заполните форму для заказа покемона
-</h2>
+</h3>
 @{
     string label_Email = IId_Extension.GetPropertyAttributeValue<Customer, string, DisplayAttribute, string>(_ => _.Email, _ => _.Name) ?? string.Empty;
     string label_Phone = IId_Extension.GetPropertyAttributeValue<Order, string, DisplayAttribute, string>(_ => _.PhoneNumber, _ => _.Name) ?? string.Empty;

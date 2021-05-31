@@ -1,8 +1,105 @@
 ﻿@page "/Line"
 @using POKEMONSHOP.Contracts
+@using Microsoft.AspNetCore.Http
+@using POKEMONSHOP.Data
+@using POKEMONLIBRARY.Models
+@using POKEMONLIBRARY.Contracts
+@using POKEMONSHOP.Extensions
+@using System.ComponentModel.DataAnnotations
+
 @inject IPokemonService service
 
-@code {
-    [Parameter]
-    public string AppUser { get; set; }
-}
+<h3>
+    Покупатели покемонов и их заказы
+</h3>
+<div class="adapt_table3">
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    № п/п
+                </th>
+                <th>
+                    Дата и время заказа
+                </th>
+                <th>
+                    Имя покупателя
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (this.Customers != null && this.Customers?.Count > 0)
+            {
+                int i = 0;
+                foreach (var customer in this.Customers)
+                {
+                    string email = customer.Email ?? string.Empty;
+                    var orders = this.GetOrdersSomeCustomer(customer.Id) ?? new List<Order>();
+                    string labelnum = $"Всего покупатель {email} купил {orders?.Count ?? 0} покемона";
+                    <tr>
+                        <th colspan="3">
+                            @email
+                        </th>
+                    </tr>
+                    @if (orders?.Count > 0)
+                    {
+                        foreach (var order in orders)
+                        {
+                            i++;
+                            string date = order?.DateOrder.ToString();
+                            string name = order?.Name ?? string.Empty;
+                            <tr>
+                                <td>
+                                    @i
+                                </td>
+                                <td>
+                                    @date
+                                </td>
+                                <td>
+                                    @name
+                                </td>
+                            </tr>
+                        }
+                    }
+                    <tr>
+                        <th colspan="3">
+                            @labelnum
+                        </th>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="3">
+                        В системе нет ни одного зарегистрированного заказа
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+    @code {
+        [Parameter]
+        public string AppUser { get; set; }
+
+        private List<Customer> Customers { get; set; }
+
+        private void InitializeCollections()
+        {
+            this.Customers = this.service?.GetAllCustomers();
+        }
+
+        /// <summary>
+        /// Метод для получения всех заказов пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        private List<Order> GetOrdersSomeCustomer(int id) => this.service?.GetAllOrdersSomeCustomer(id) ?? new List<Order>();
+
+        protected override void OnInitialized()
+        {
+            this.InitializeCollections();
+        }
+    }

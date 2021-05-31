@@ -67,53 +67,10 @@ namespace POKEMONSHOP.Services
         private async Task SendorderInfoToToEMail(string email, string title, string message) =>  await this.emailSender.SendEmailAsync(email, title, message);
 
         /// <summary>
-        /// Метод для формирования ленты
+        /// Метод для получения коллекции всех заказов заданного покупателя
         /// </summary>
-        /// <returns>Кортеж, содержащий количество заказов покемона, сгруппированное по покупателю и дате заказа</returns>
-        public Dictionary<string, Dictionary<DateTime, int>> GetLineAllOrdersSomeCustomers()
-        {
-            Dictionary<string, Dictionary<DateTime, int>> result = new Dictionary<string, Dictionary<DateTime, int>>();
-
-            List<Customer> allCustom = this.rep?.Customers?.GetAllCustomers() ?? new List<Customer>();
-
-            if (allCustom?.Count > 0)
-            {
-                foreach(Customer customer in allCustom)
-                {
-                    List<Order> orders = this.rep?.Orders?.GetAllOrders()?.Where(_ => _.CustomerId == customer.Id)?.ToList() ?? new List<Order>();
-
-                    if(orders?.Count > 0)
-                    {
-                        //Dictionary<DateTime, int> temp = orders.GroupBy(_ => _.DateOrder)
-                        //                                       .Select(item => new
-                        //                                                             {
-                        //                                                                 Date = item.Key,
-                        //                                                                 Num = item.Count()
-                        //                                                             }
-                        //                                       )
-                        //                                       ?
-                        //                                       .ToDictionary(a => a.Date, b => b.Num)
-                        //                                       ;
-
-                        Dictionary<DateTime, int> temp = orders.GroupBy(_ => _.DateOrder)
-                                                              .Select(item => new
-                                                              {
-                                                                  Date = item.Key,
-                                                                  Num = item.Count()
-                                                              }
-                                                              )
-                                                              ?
-                                                              .ToDictionary(a => a.Date, b => b.Num)
-                                                              ;
-                        //if (!result.ContainsKey(customer.Name))
-                        //{
-                        //    result.Add(customer.Name, temp);
-                        //}
-                    }
-                }
-            }
-            return result;
-        }
+        /// <returns></returns>
+        public List<Order> GetAllOrdersSomeCustomer(int idCustomer) => this.rep?.Orders?.GetAllOrders()?.Where(_ => _.CustomerId == idCustomer)?.OrderByDescending(_ => _.DateOrder)?.ToList() ?? new List<Order>();
 
         /// <summary>
         /// Метод для получения общего числа заказанных покемонов заданным покупателем за все время
@@ -121,5 +78,11 @@ namespace POKEMONSHOP.Services
         /// <param name="idCustomer">Идентификатор покупателя/param>
         /// <returns>Число заказов</returns>
         public int GetNumberOrders(int idCustomer) => this.rep?.Orders?.GetAllOrders().Where(_ => _.CustomerId == idCustomer)?.Count() ?? 0;
+
+        /// <summary>
+        /// Метод для получения коллекции всех зарегистр-х в БД покупателей
+        /// </summary>
+        /// <returns></returns>
+        public List<Customer> GetAllCustomers() => this.rep?.Customers?.GetAllCustomers() ?? new List<Customer>();
     }
 }
