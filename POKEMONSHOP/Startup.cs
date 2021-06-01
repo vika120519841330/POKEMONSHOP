@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using POKEMONSHOP.MiddleWare;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.Net.Http;
+using POKEMONAPI;
 
 namespace POKEMONSHOP
 {
@@ -85,6 +86,7 @@ namespace POKEMONSHOP
             services.AddScoped<IOrder, OrderService>();
             services.AddScoped<ICustomer, CustomerService>();
             services.AddScoped<IRepository, Repository>();
+            services.AddScoped<ApiService>();
 
             // Social LogIn
             services.AddAuthentication().AddFacebook(facebookOptions =>

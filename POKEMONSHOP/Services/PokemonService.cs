@@ -84,5 +84,11 @@ namespace POKEMONSHOP.Services
         /// </summary>
         /// <returns></returns>
         public List<Customer> GetAllCustomers() => this.rep?.Customers?.GetAllCustomers() ?? new List<Customer>();
+
+        /// <summary>
+        /// Метод для получения всех покупателей зарег-х в БД в качестве таковых
+        /// </summary>
+        /// <returns>Коллекция покупателей</returns>
+        public async Task<List<Customer>> GetAllCustomers_async() => await this.rep.Customers?.GetAllCustomers_async();
     }
 }

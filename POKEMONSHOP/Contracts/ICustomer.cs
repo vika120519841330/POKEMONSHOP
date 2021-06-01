@@ -11,5 +11,6 @@ namespace POKEMONSHOP.Contracts
         Customer GetCustomer(int id);
         List<Customer> GetAllCustomers();
         Customer AddCustomer(Customer item);
+        Task<List<Customer>> GetAllCustomers_async();
     }
 }

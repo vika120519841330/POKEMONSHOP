@@ -8,7 +8,8 @@
 @using POKEMONLIBRARY.Contracts
 @using POKEMONSHOP.Extensions
 @using System.ComponentModel.DataAnnotations
-
+@using POKEMONAPI
+@inject ApiService api
 @inject IPokemonService service
 
 <h5>
@@ -98,9 +99,9 @@
     [Parameter]
     public string StatusMessage { get; set; }
 
-    private void InitializeCollections()
+    private async Task InitializeCollections()
     {
-        this.Customers = this.service?.GetAllCustomers();
+        this.Customers = await this.api?.GetAllCustomers_async();
     }
 
     /// <summary>
@@ -110,9 +111,13 @@
     /// <returns></returns>
     private List<Order> GetOrdersSomeCustomer(int id) => this.service?.GetAllOrdersSomeCustomer(id) ?? new List<Order>();
 
-    protected override void OnInitialized()
+    /// <summary>
+    /// Срабатывает при первоначальной отрисовке компонента
+    /// </summary>
+    /// <returns></returns>
+    protected override async Task OnInitializedAsync()
     {
-        this.InitializeCollections();
+        await this.InitializeCollections();
 
         if (string.IsNullOrEmpty(this.StatusMessage) && !string.IsNullOrEmpty(this.Number))
         {

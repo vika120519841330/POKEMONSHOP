@@ -1,4 +1,5 @@
-﻿using POKEMONLIBRARY.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using POKEMONLIBRARY.Configuration;
 using POKEMONLIBRARY.Models;
 using POKEMONSHOP.Contracts;
 using System;
@@ -41,5 +42,11 @@ namespace POKEMONSHOP.Services
             item = temp?.Entity ?? new Customer();
             return item;
         }
+
+        /// <summary>
+        /// Метод для получения всех покупателей зарег-х в БД в качестве таковых
+        /// </summary>
+        /// <returns>Коллекция покупателей</returns>
+        public async Task<List<Customer>> GetAllCustomers_async() => await this.context.Customers?.ToListAsync();
     }
 }

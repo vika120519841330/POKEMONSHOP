@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POKEMONSHOP", "POKEMONSHOP\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POKEMONLIBRARY", "POKEMONLIBRARY\POKEMONLIBRARY.csproj", "{C1D58882-67A1-4291-B1DA-81159D7BA760}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POKEMONAPI", "POKEMONAPI\POKEMONAPI.csproj", "{A4A303FB-FE10-4E9E-9042-213D02205878}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C1D58882-67A1-4291-B1DA-81159D7BA760}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1D58882-67A1-4291-B1DA-81159D7BA760}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1D58882-67A1-4291-B1DA-81159D7BA760}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4A303FB-FE10-4E9E-9042-213D02205878}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4A303FB-FE10-4E9E-9042-213D02205878}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4A303FB-FE10-4E9E-9042-213D02205878}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4A303FB-FE10-4E9E-9042-213D02205878}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
